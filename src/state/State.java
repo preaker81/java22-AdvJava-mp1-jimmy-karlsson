@@ -1,5 +1,7 @@
 package state;
 
+import java.util.Scanner;
+
 import action.Date;
 import action.Time;
 import main.interfaces.StateMachine;
@@ -7,8 +9,14 @@ import main.interfaces.StateMachine;
 public class State implements StateMachine {
 	private StateEnum currentState;
 
+	private Time timeInstance;
+	private Date dateInstance;
+
 	public State(StateEnum currentState) {
 		this.currentState = currentState;
+
+		this.timeInstance = new Time();
+		this.dateInstance = new Date();
 	}
 
 	@Override
@@ -50,19 +58,19 @@ public class State implements StateMachine {
 	}
 
 	@Override
-	public void performAction() {
+	public void performAction(Scanner sc) {
 		switch (currentState) {
 		case DISPLAY_TIME:
-			new Time().displayAction();
+			timeInstance.displayAction(); // Use existing instance
 			break;
 		case DISPLAY_DATE:
-			new Date().displayAction();
+			dateInstance.displayAction(); // Use existing instance
 			break;
 		case CHANGE_TIME:
-			new Time().setAction();
+			timeInstance.setAction(sc); // Modify existing instance
 			break;
 		case CHANGE_DATE:
-			new Date().setAction();
+			dateInstance.setAction(sc); // Modify existing instance
 			break;
 		}
 	}
