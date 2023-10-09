@@ -1,28 +1,40 @@
 package state;
 
+import java.time.LocalTime;
 import java.util.Scanner;
 
 import action.Date;
 import action.Time;
+import action.SecondTimeKeeper;
+import action.interfaces.DateKeeper;
+import action.interfaces.TimeKeeper;
 import main.interfaces.StateMachine;
 
+// State class implements StateMachine interface for managing states and actions
 public class State implements StateMachine {
-	private StateEnum currentState;
+	private StateEnum currentState;  // Current state of the application
 
-	private Time timeInstance;
-	private Date dateInstance;
+	private Time timeInstance;  // Time instance for time-related actions
+	private Date dateInstance;  // Date instance for date-related actions
 
-	public State(StateEnum currentState) {
+	// Constructor initializes the current state and instances of Time and Date
+	public State(StateEnum currentState, TimeKeeper timeKeeper, DateKeeper dateKeeper) {
 		this.currentState = currentState;
 
-		this.timeInstance = new Time();
-		this.dateInstance = new Date();
+		this.timeInstance = new Time(timeKeeper);
+		this.dateInstance = new Date(dateKeeper);
+
+		// Initialize TimeKeeper with DateKeeper
+		timeKeeper = new SecondTimeKeeper(LocalTime.now(), dateKeeper);
 	}
 
+
+	// Method to change the current state
 	@Override
 	public void changeState(StateEnum targetState) throws IllegalStateException {
 		StateEnum prevState = currentState; // Save the previous state for logging or debugging
 
+		// Logic to validate state transitions
 		switch (currentState) {
 		case DISPLAY_TIME:
 			if (targetState == StateEnum.DISPLAY_DATE || targetState == StateEnum.CHANGE_TIME) {
@@ -57,8 +69,10 @@ public class State implements StateMachine {
 		throw new IllegalStateException("Invalid state transition from " + prevState + " to " + targetState);
 	}
 
+	// Method to perform an action based on the current state
 	@Override
 	public void performAction(Scanner sc) {
+		// Logic to perform actions based on the current state
 		switch (currentState) {
 		case DISPLAY_TIME:
 			timeInstance.displayAction(); // Use existing instance
@@ -75,6 +89,7 @@ public class State implements StateMachine {
 		}
 	}
 
+	// Method to get the current state
 	public StateEnum getCurrentState() {
 		return currentState;
 	}

@@ -1,5 +1,6 @@
 package main.utils;
 
+// ConsoleColors class provides utility methods for setting console text colors
 public class ConsoleColors {
 	// ANSI escape codes for various colors
 	public static final String BLACK = "\u001B[30m";
@@ -12,12 +13,7 @@ public class ConsoleColors {
 	public static final String WHITE = "\u001B[37m";
 	public static final String RESET = "\u001B[0m";
 
-	/**
-	 * ConsoleColors.setColor("cyan"); System.out.println("This is some cyan text" +
-	 * ConsoleColors.RESET);
-	 * 
-	 * @param color
-	 */
+	// Method to set the console text color
 	public static void setColor(String color) {
 		switch (color.toLowerCase()) {
 		case "black":
@@ -53,12 +49,7 @@ public class ConsoleColors {
 		}
 	}
 
-	/**
-	 * ConsoleColors.printColor("cyan", "This is some cyan text");
-	 * 
-	 * @param color
-	 * @param text
-	 */
+	// Method to print text in a specific color
 	public static void printColor(String color, String text) {
 		setColor(color);
 		System.out.println(text + RESET);

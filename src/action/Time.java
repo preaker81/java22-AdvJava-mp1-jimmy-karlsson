@@ -3,30 +3,54 @@ package action;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
+import action.interfaces.TimeKeeper;
 import main.utils.ConsoleColors;
 
+// Time class extends the abstract Clock class
 public class Time extends Clock {
-	private LocalTime currentTime;
+	// Declare instance variables
+	private TimeKeeper timeKeeper; // Using TimeKeeper interface
+	private String timeFormatRegEx = "\\d{2}:\\d{2}:\\d{2}";
 
-	public Time() {
-		this.currentTime = LocalTime.now();
+	// Constructor accepts a TimeKeeper object
+	public Time(TimeKeeper timeKeeper) {
+		this.timeKeeper = timeKeeper;
+		timeKeeper.start(); // Start the time-keeping logic
 	}
 
+	// Override displayAction method from Clock class
+	@Override
 	public void displayAction() {
+		// Get current time from TimeKeeper
+		LocalTime currentTime = timeKeeper.getCurrentTime();
+		// Format the time
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		// Display the time
 		ConsoleColors.setColor("yellow");
 		System.out.println("Display Time: " + currentTime.format(formatter));
 		ConsoleColors.setColor("reset");
 	}
 
+	// Override setAction method from Clock class
+	@Override
 	public void setAction(Scanner sc) {
+		// Prompt for new time
 		System.out.println("Enter new time in HH:mm:ss format");
 		String newTimeStr = sc.next();
-		try {
-			currentTime = LocalTime.parse(newTimeStr);
-			System.out.println("Time updated successfully.");
-		} catch (Exception e) {
+
+		// Validate the time format using regex
+		if (Pattern.matches(timeFormatRegEx, newTimeStr)) {
+			try {
+				// Parse and set the new time
+				LocalTime newTime = LocalTime.parse(newTimeStr);
+				timeKeeper.setCurrentTime(newTime); // Update time using TimeKeeper
+				System.out.println("Time updated successfully.");
+			} catch (Exception e) {
+				System.out.println("Invalid time. Time not updated.");
+			}
+		} else {
 			System.out.println("Invalid time format. Time not updated.");
 		}
 	}

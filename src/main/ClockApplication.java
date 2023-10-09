@@ -1,22 +1,38 @@
 package main;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Scanner;
 
 import main.interfaces.StateMachine;
 import main.utils.ConsoleColors;
 import state.State;
 import state.StateEnum;
+import action.interfaces.TimeKeeper;
+import action.interfaces.DateKeeper;
+import action.SecondTimeKeeper;
+import action.DayDateKeeper;
 
 public class ClockApplication {
+    // Declare instance variables
 	String input = "";
 	Scanner sc = new Scanner(System.in);
 
+    // Main method to run the application
 	public void run() {
+		// Initialize TimeKeeper and DateKeeper implementations
+		DateKeeper dateKeeper = new DayDateKeeper(LocalDate.now());
+		TimeKeeper timeKeeper = new SecondTimeKeeper(LocalTime.now(), dateKeeper);
 
-		StateMachine stateMachine = new State(StateEnum.DISPLAY_TIME); // Starts in S1: Display Time
+		// Initialize the state machine starting in DISPLAY_TIME state
+		StateMachine stateMachine = new State(StateEnum.DISPLAY_TIME, timeKeeper, dateKeeper);
 
-		while (input != "q") {
+        // Main loop to keep the application running until 'q' is entered
+		while (!"q".equals(input)) {
+			// Get the current state from the state machine
 			StateEnum currentState = ((State) stateMachine).getCurrentState();
+			
+            // Switch case to handle different states
 			switch (currentState) {
 			case DISPLAY_TIME:
 				displayTimeMenu(currentState, stateMachine);
@@ -33,8 +49,8 @@ public class ClockApplication {
 			default:
 				break;
 			}
-
 		}
+		// Close the scanner
 		sc.close();
 	}
 
