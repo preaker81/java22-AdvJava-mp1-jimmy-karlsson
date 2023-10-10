@@ -8,7 +8,8 @@ import action.Time;
 import action.SecondTimeKeeper;
 import action.interfaces.DateKeeper;
 import action.interfaces.TimeKeeper;
-import main.interfaces.StateMachine;
+import main.utils.ConsoleColors;
+import state.interfaces.StateMachine;
 
 // State class implements StateMachine interface for managing states and actions
 public class State implements StateMachine {
@@ -31,63 +32,72 @@ public class State implements StateMachine {
 
 	// Method to change the current state
 	@Override
-	public void changeState(StateEnum targetState) throws IllegalStateException {
-		StateEnum prevState = currentState; // Save the previous state for logging or debugging
+	public void changeState(StateEnum targetState) {
+	    StateEnum prevState = currentState; // Save the previous state for logging or debugging
 
-		// Logic to validate state transitions
-		switch (currentState) {
-		case DISPLAY_TIME:
-			if (targetState == StateEnum.DISPLAY_DATE || targetState == StateEnum.CHANGE_TIME) {
-				currentState = targetState;
-				return; // Exit the method successfully
-			}
-			break;
+	    // Logic to validate state transitions
+	    switch (currentState) {
+	        case DISPLAY_TIME:
+	            if (targetState == StateEnum.DISPLAY_DATE || targetState == StateEnum.CHANGE_TIME) {
+	                currentState = targetState;
+	                return; // Exit the method successfully
+	            } else {
+	                ConsoleColors.printColor("red", "Illegal state change. State remains " + currentState);
+	            }
+	            break;
 
-		case DISPLAY_DATE:
-			if (targetState == StateEnum.DISPLAY_TIME || targetState == StateEnum.CHANGE_DATE) {
-				currentState = targetState;
-				return; // Exit the method successfully
-			}
-			break;
+	        case DISPLAY_DATE:
+	            if (targetState == StateEnum.DISPLAY_TIME || targetState == StateEnum.CHANGE_DATE) {
+	                currentState = targetState;
+	                return; // Exit the method successfully
+	            } else {
+	                ConsoleColors.printColor("red", "Illegal state change. State remains " + currentState);
+	            }
+	            break;
 
-		case CHANGE_TIME:
-			if (targetState == StateEnum.DISPLAY_TIME) {
-				currentState = targetState;
-				return; // Exit the method successfully
-			}
-			break;
+	        case CHANGE_TIME:
+	            if (targetState == StateEnum.DISPLAY_TIME) {
+	                currentState = targetState;
+	                return; // Exit the method successfully
+	            } else {
+	                ConsoleColors.printColor("red", "Illegal state change. State remains " + currentState);
+	            }
+	            break;
 
-		case CHANGE_DATE:
-			if (targetState == StateEnum.DISPLAY_DATE) {
-				currentState = targetState;
-				return; // Exit the method successfully
-			}
-			break;
-		}
-
-		// If we reach here, the state transition was not allowed
-		throw new IllegalStateException("Invalid state transition from " + prevState + " to " + targetState);
+	        case CHANGE_DATE:
+	            if (targetState == StateEnum.DISPLAY_DATE) {
+	                currentState = targetState;
+	                return; // Exit the method successfully
+	            } else {
+	                ConsoleColors.printColor("red", "Illegal state change. State remains " + currentState);
+	            }
+	            break;
+	    }
 	}
+
 
 	// Method to perform an action based on the current state
-	@Override
-	public void performAction(Scanner sc) {
-		// Logic to perform actions based on the current state
-		switch (currentState) {
-		case DISPLAY_TIME:
-			timeInstance.displayAction(); // Use existing instance
-			break;
-		case DISPLAY_DATE:
-			dateInstance.displayAction(); // Use existing instance
-			break;
-		case CHANGE_TIME:
-			timeInstance.setAction(sc); // Modify existing instance
-			break;
-		case CHANGE_DATE:
-			dateInstance.setAction(sc); // Modify existing instance
-			break;
-		}
-	}
+    @Override
+    public void performAction(Scanner sc) {
+        switch (currentState) {
+            case DISPLAY_TIME:
+                timeInstance.displayAction();
+                break;
+            case DISPLAY_DATE:
+                dateInstance.displayAction();
+                break;
+            case CHANGE_TIME:
+                timeInstance.setAction(sc);
+                // Automatically transition back to DISPLAY_TIME
+                changeState(StateEnum.DISPLAY_TIME);
+                break;
+            case CHANGE_DATE:
+                dateInstance.setAction(sc);
+                // Automatically transition back to DISPLAY_DATE
+                changeState(StateEnum.DISPLAY_DATE);
+                break;
+        }
+    }
 
 	// Method to get the current state
 	public StateEnum getCurrentState() {

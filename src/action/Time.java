@@ -28,9 +28,7 @@ public class Time extends Clock {
 		// Format the time
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 		// Display the time
-		ConsoleColors.setColor("yellow");
-		System.out.println("Display Time: " + currentTime.format(formatter));
-		ConsoleColors.setColor("reset");
+		ConsoleColors.printColor("yellow", "Display Time: " + currentTime.format(formatter));
 	}
 
 	// Override setAction method from Clock class
@@ -46,12 +44,12 @@ public class Time extends Clock {
 				// Parse and set the new time
 				LocalTime newTime = LocalTime.parse(newTimeStr);
 				timeKeeper.setCurrentTime(newTime); // Update time using TimeKeeper
-				System.out.println("Time updated successfully.");
+				ConsoleColors.printColor("green", "Time updated successfully.");
 			} catch (Exception e) {
-				System.out.println("Invalid time. Time not updated.");
+				ConsoleColors.printColor("red", "Invalid time. Time not updated.");
 			}
 		} else {
-			System.out.println("Invalid time format. Time not updated.");
+			ConsoleColors.printColor("red", "Invalid time format. Time not updated.");
 		}
 	}
 }

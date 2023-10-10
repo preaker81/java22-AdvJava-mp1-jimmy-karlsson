@@ -1,4 +1,4 @@
-package main.interfaces;
+package state.interfaces;
 
 import java.util.Scanner;
 import state.StateEnum;

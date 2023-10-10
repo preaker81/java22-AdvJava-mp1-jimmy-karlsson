@@ -30,9 +30,7 @@ public class Date extends Clock {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         
         // Display the date
-        ConsoleColors.setColor("yellow");
-        System.out.println("Display Date: " + currentDate.format(formatter));
-        ConsoleColors.setColor("reset");
+		ConsoleColors.printColor("yellow", "Display Date: " + currentDate.format(formatter));
     }
 
     // Override setAction method from Clock class
@@ -48,12 +46,12 @@ public class Date extends Clock {
                 // Parse and set the new date
                 LocalDate newDate = LocalDate.parse(newDateStr);
                 dateKeeper.setCurrentDate(newDate);
-                System.out.println("Date updated successfully.");
+        		ConsoleColors.printColor("green", "Date updated successfully.");
             } catch (Exception e) {
-                System.out.println("Invalid date. Date not updated.");
+        		ConsoleColors.printColor("red", "Invalid date. Date not updated.");
             }
         } else {
-            System.out.println("Invalid date format. Date not updated.");
+    		ConsoleColors.printColor("red", "Invalid date format. Date not updated.");
         }
     }
 }
