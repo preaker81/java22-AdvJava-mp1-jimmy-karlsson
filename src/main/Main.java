@@ -9,7 +9,5 @@ public class Main {
         
         // Call the run method of the ClockApplication instance to start the application
 		clockApplication.run();
-		
-//		System.exit(0);
 	}
 }
